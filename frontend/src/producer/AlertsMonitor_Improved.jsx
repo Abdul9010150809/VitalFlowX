@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { AlertTriangle, Info, AlertCircle as AlertIcon, CheckCircle2 } from 'lucide-react';
-import { useToast } from '../../context/ToastContext';
+import { useToast } from '../context/ToastContext';
 import { alertsData } from './dummyData';
 import ProducerService from './ProducerService';
 

@@ -150,6 +150,8 @@ const AppRoutes = () => {
         <Route element={<DashboardLayout role="producer" links={roleLinks['producer']}><Outlet/></DashboardLayout>}>
           <Route index element={<Navigate to="producerdashboard" replace />} />
           <Route path="producerdashboard" element={<ProducerProducerDashboard />} />
+          <Route path="shipments" element={<ProducerShipments />} />
+          <Route path="livetracking" element={<ProducerLiveTracking />} />
           <Route path="createshipment" element={<ProducerCreateShipment />} />
           <Route path="productbatchconfig" element={<ProducerProductBatchConfig />} />
           <Route path="routeplan" element={<ProducerRoutePlan />} />

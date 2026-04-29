@@ -3,8 +3,8 @@
  * Handles all API calls for producer features
  */
 
-import { apiClient } from '../../api/apiClient';
-import { API_ENDPOINTS, STORAGE_KEYS } from '../../config/apiConfig';
+import { apiClient } from '../api/apiClient';
+import { API_ENDPOINTS, STORAGE_KEYS } from '../config/apiConfig';
 
 class ProducerService {
   /**

@@ -49,34 +49,60 @@ export const ShipmentProvider = ({ children }) => {
     try {
       const response = await apiClient.patch(`${API_ENDPOINTS.SHIPMENTS}/${shipmentId}/status`, { status });
       if (response.success) {
-        // Update in state
-        setShipments(prev =>
-          prev.map(s => s.id === shipmentId ? { ...s, status } : s)
-        );
+        const previousShipments = shipments;
+        const nextShipments = previousShipments.map(s => s.id === shipmentId ? { ...s, status } : s);
+        const updatedShipment = nextShipments.find(s => s.id === shipmentId) || null;
+
+        setShipments(nextShipments);
         setActiveShipment(prev => {
           if (prev?.id === shipmentId) {
             return { ...prev, status };
           }
           return prev;
         });
+
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('shipment:updated', {
+            detail: {
+              shipmentId,
+              status,
+              shipment: updatedShipment,
+              previousStatus: previousShipments.find(s => s.id === shipmentId)?.status,
+            },
+          }));
+        }
+
         return response.data;
       }
     } catch (err) {
       setError(err.message || 'Failed to update shipment status');
       throw err;
     }
-  }, []);
+  }, [shipments]);
 
   // Set live tracking data for a shipment
   const setShipmentTracking = useCallback((shipmentId, trackingData) => {
-    setLiveTracking(prev => ({
-      ...prev,
-      [shipmentId]: {
-        ...prev[shipmentId],
-        ...trackingData,
-        lastUpdated: new Date().toISOString(),
-      },
-    }));
+    setLiveTracking(prev => {
+      const nextTracking = {
+        ...prev,
+        [shipmentId]: {
+          ...prev[shipmentId],
+          ...trackingData,
+          lastUpdated: new Date().toISOString(),
+        },
+      };
+
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('shipment:tracking-updated', {
+          detail: {
+            shipmentId,
+            trackingData: nextTracking[shipmentId],
+          },
+        }));
+      }
+
+      return nextTracking;
+    });
   }, []);
 
   // Get live tracking data for a shipment

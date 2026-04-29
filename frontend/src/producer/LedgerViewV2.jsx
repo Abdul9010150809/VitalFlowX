@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Copy, ExternalLink } from 'lucide-react';
 import { ledgerData } from './dummyData';
-import { formatDate } from '../../utils/helpers';
-import { useToast } from '../../context/ToastContext';
+import { formatDate } from '../utils/helpers';
+import { useToast } from '../context/ToastContext';
 
 const LedgerView = () => {
   const { success } = useToast();

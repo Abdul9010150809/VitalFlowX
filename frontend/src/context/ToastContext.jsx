@@ -3,7 +3,7 @@
  * Simple notification management
  */
 
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import { AlertCircle, CheckCircle, Info, AlertTriangle, X } from 'lucide-react';
 
 const ToastContext = createContext(null);
@@ -32,6 +32,30 @@ export function ToastProvider({ children }) {
 
     return id;
   }, [removeToast]);
+
+  useEffect(() => {
+    const handleShipmentUpdated = (event) => {
+      const { shipmentId, status } = event.detail || {};
+      if (shipmentId && status) {
+        addToast(`Shipment ${shipmentId} updated to ${status.replaceAll('_', ' ')}`, 'info', 4000);
+      }
+    };
+
+    const handleTrackingUpdated = (event) => {
+      const { shipmentId } = event.detail || {};
+      if (shipmentId) {
+        addToast(`Live tracking refreshed for shipment ${shipmentId}`, 'success', 3000);
+      }
+    };
+
+    window.addEventListener('shipment:updated', handleShipmentUpdated);
+    window.addEventListener('shipment:tracking-updated', handleTrackingUpdated);
+
+    return () => {
+      window.removeEventListener('shipment:updated', handleShipmentUpdated);
+      window.removeEventListener('shipment:tracking-updated', handleTrackingUpdated);
+    };
+  }, [addToast]);
 
   const success = useCallback((message, duration = 5000) => {
     return addToast(message, 'success', duration);

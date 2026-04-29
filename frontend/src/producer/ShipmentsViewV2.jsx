@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Truck, AlertTriangle, CheckCircle2 } from 'lucide-react';
 import { shipmentsData } from './dummyData';
-import { formatDate } from '../../utils/helpers';
+import { formatDate } from '../utils/helpers';
 
 const ShipmentsView = () => {
   const [shipments] = useState(shipmentsData);
