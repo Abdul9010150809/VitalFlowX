@@ -1,0 +1,110 @@
+VitalflowX Project Structure
+============================
+
+VitalflowX/
+│
+├── 📁 frontend/                    # React + Vite Application
+│   ├── src/
+│   │   ├── common/                # Shared components and utilities
+│   │   ├── inspector/             # Inspector role UI
+│   │   ├── producer/              # Producer role UI
+│   │   ├── regulator/             # Regulator role UI
+│   │   ├── retailer/              # Retailer role UI
+│   │   ├── transporter/           # Transporter role UI
+│   │   ├── warehouse/             # Warehouse role UI
+│   │   ├── layouts/               # Layout components
+│   │   ├── routes/                # Route configuration
+│   │   ├── assets/                # Static assets
+│   │   ├── __tests__/             # Unit tests
+│   │   ├── App.jsx                # Root component
+│   │   ├── App.css                # Global styles
+│   │   ├── main.jsx               # Entry point
+│   │   ├── index.css              # CSS resets
+│   │   └── setupTests.js          # Test configuration
+│   ├── public/                    # Public assets
+│   │   ├── favicon.svg
+│   │   └── icons.svg
+│   ├── package.json               # NPM dependencies
+│   ├── package-lock.json          # Locked dependencies
+│   ├── vite.config.js             # Vite configuration
+│   ├── tailwind.config.js         # Tailwind CSS config
+│   ├── postcss.config.js          # PostCSS config
+│   ├── eslint.config.js           # ESLint rules
+│   ├── index.html                 # HTML template
+│   ├── Dockerfile                 # Docker config
+│   ├── .gitignore                 # Git ignore rules
+│   ├── .env.local.example         # Environment template
+│   ├── README.md                  # Frontend docs
+│   ├── generate_*.js              # UI generation scripts
+│   └── move_tests.js              # Test utilities
+│
+├── 📁 backend/                     # FastAPI Application
+│   ├── app/
+│   │   ├── api/v1/
+│   │   │   ├── endpoints/
+│   │   │   │   ├── alerts.py
+│   │   │   │   ├── documents.py
+│   │   │   │   ├── events.py
+│   │   │   │   ├── sensors.py
+│   │   │   │   └── shipments.py
+│   │   │   └── router.py
+│   │   ├── models/                # Database models
+│   │   ├── schemas/               # Pydantic schemas
+│   │   ├── services/              # Business logic
+│   │   ├── blockchain/            # Blockchain integration
+│   │   ├── db/                    # Database config
+│   │   ├── core/                  # Core utilities
+│   │   ├── utils/                 # Helper functions
+│   │   ├── workers/               # Celery tasks
+│   │   └── main.py                # FastAPI app
+│   ├── alembic/                   # Database migrations
+│   ├── requirements.txt           # Python dependencies
+│   ├── alembic.ini                # Migration config
+│   ├── Dockerfile                 # Docker config
+│   └── .env.example               # Environment template
+│
+├── 📄 README.md                    # Project overview
+├── 📄 INTEGRATION_GUIDE.md         # Setup guide
+├── 📄 PROJECT_STRUCTURE.txt        # This file
+├── 📄 docker-compose.yml          # Docker Compose config
+│
+└── Other files (.git, .venv, etc)
+
+File Statistics:
+================
+- Frontend files: ~50+
+- Backend files: ~40+
+- Configuration files: 5+
+- Documentation files: 4
+
+Tech Stack:
+===========
+Frontend:  React 19, Vite, Tailwind CSS, React Router, Lucide Icons
+Backend:   FastAPI, SQLAlchemy, PostgreSQL, Redis, Celery, Web3.py
+Database:  PostgreSQL with async support
+Cache:     Redis
+Blockchain: Web3.py for smart contract interaction
+Container: Docker & Docker Compose
+
+Quick Start Commands:
+====================
+Backend:
+  cd backend
+  python -m venv venv
+  source venv/bin/activate
+  pip install -r requirements.txt
+  uvicorn app.main:app --reload
+
+Frontend:
+  cd frontend
+  npm install
+  npm run dev
+
+Docker:
+  docker-compose up
+
+Project URLs (when running locally):
+====================================
+Frontend:     http://localhost:5173
+Backend API:  http://localhost:8000
+API Docs:     http://localhost:8000/docs
