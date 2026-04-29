@@ -1,18 +1,32 @@
-import React from 'react';
+import { useState } from 'react';
 
 const SensorMonitor = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setTimeout(() => { setIsSubmitting(false); setSuccess(true); e.target.reset(); }, 1500);
+  };
+
+
   return (
-    <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 text-center flex flex-col items-center">
-      <div className="w-16 h-16 bg-orange-50 rounded-full flex items-center justify-center mb-4">
-        <span className="text-2xl text-orange-500">🚚</span>
+    <div className="space-y-6 animate-fade-in-up">
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h2 className="text-2xl font-bold text-slate-800">Sensor Monitor</h2>
+          <p className="text-slate-500 text-sm mt-1">Transporter module — functionality enabled</p>
+        </div>
       </div>
-      <h2 className="text-2xl font-bold text-gray-800 mb-2">Sensor Monitor</h2>
-      <p className="text-gray-500 max-w-md mx-auto">
-        This portal module is engineered for Transporter IoT tracking and delivery verifications.
-        (Configurable form/data placeholder)
-      </p>
-      <button className="mt-6 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 font-medium">Manage Logistics</button>
+      <div className="bg-white p-6 rounded-xl border border-slate-100 shadow-sm text-center text-slate-500">
+   <p className="mb-4">This section displays Sensor Monitor data securely retrieved from the blockchain.</p>
+   <button onClick={() => setSuccess(!success)} className="px-4 py-2 bg-orange-100 text-orange-700 rounded-lg hover:bg-orange-200">
+     {success ? 'Connected' : 'Click to Connect Node'}
+   </button>
+</div>
     </div>
   );
 };
+
 export default SensorMonitor;

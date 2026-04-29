@@ -3,7 +3,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.v1 import router as api_router
-from app.db.session import init_db
+from app.db.mongodb import connect_to_mongo, close_mongo_connection
 from app.utils.logger import get_logger
 from app.core.config import settings
 
@@ -19,7 +19,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 @app.middleware("http")
 async def simple_rate_limiter(request: Request, call_next):
     # Very small per-process rate limiter to protect endpoints in demo
@@ -30,7 +29,12 @@ async def simple_rate_limiter(request: Request, call_next):
 @app.on_event("startup")
 async def on_startup():
     logger.info("Initializing DB...")
-    await init_db()
+    await connect_to_mongo()
+
+@app.on_event("shutdown")
+async def on_shutdown():
+    logger.info("Closing DB...")
+    await close_mongo_connection()
 
 
 @app.get("/health")

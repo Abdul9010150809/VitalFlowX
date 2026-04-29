@@ -1,5 +1,5 @@
 import React from 'react';
-import { UploadCloud, FileText } from 'lucide-react';
+import { UploadCloud } from 'lucide-react';
 const UploadDocs = () => (
   <div className="max-w-3xl mx-auto animate-fade-in-up flex flex-col items-center justify-center py-10">
     <div className="text-center mb-8">

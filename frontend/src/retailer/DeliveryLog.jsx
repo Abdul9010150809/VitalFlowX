@@ -1,18 +1,48 @@
-import React from 'react';
+import { useState } from 'react';
 
 const DeliveryLog = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setTimeout(() => { setIsSubmitting(false); setSuccess(true); e.target.reset(); }, 1500);
+  };
+  const mockData = Array(5).fill(0).map((_,i) => ({id: 'Sample ' + i, shipment: 'Sample ' + i, received: 'Sample ' + i, QAStatus: 'Sample ' + i, tempStability: 'Sample ' + i}));
+  const filteredData = mockData.filter(row => Object.values(row).some(val => String(val).toLowerCase().includes(searchTerm.toLowerCase())));
+
   return (
-    <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 text-center flex flex-col items-center">
-      <div className="w-16 h-16 bg-emerald-50 rounded-full flex items-center justify-center mb-4">
-        <span className="text-2xl text-emerald-500">🛒</span>
+    <div className="space-y-6 animate-fade-in-up">
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h2 className="text-2xl font-bold text-slate-800">Delivery Log</h2>
+          <p className="text-slate-500 text-sm mt-1">Retailer module — functionality enabled</p>
+        </div>
       </div>
-      <h2 className="text-2xl font-bold text-gray-800 mb-2">Delivery Log</h2>
-      <p className="text-gray-500 max-w-md mx-auto">
-        This portal module allows Retailers/Pharmacists to integrate incoming data streams from transporters securely.
-        (Configurable form/data placeholder)
-      </p>
-      <button className="mt-6 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 font-medium">Manage Interface</button>
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden flex flex-col h-full">
+  <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+    <input type="text" placeholder="Search records..." className="px-4 py-2 rounded-lg border border-slate-200 text-sm focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+    <span className="text-sm text-slate-500">{filteredData.length} records found</span>
+  </div>
+  <div className="overflow-x-auto">
+    <table className="min-w-full divide-y divide-slate-100">
+      <thead className="bg-slate-50"><tr>
+<th className="px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">ID</th>\n<th className="px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Shipment</th>\n<th className="px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Received</th>\n<th className="px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">QA Status</th>\n<th className="px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Temp</th>
+</tr></thead>
+      <tbody className="divide-y divide-slate-50">
+        {filteredData.map((row, i) => (
+          <tr key={i} className="hover:bg-slate-50/50 transition-colors">
+<td className="px-4 py-3 text-sm text-slate-600 whitespace-nowrap">{row.id || 'N/A'}</td>\n<td className="px-4 py-3 text-sm text-slate-600 whitespace-nowrap">{row.shipment || 'N/A'}</td>\n<td className="px-4 py-3 text-sm text-slate-600 whitespace-nowrap">{row.received || 'N/A'}</td>\n<td className="px-4 py-3 text-sm text-slate-600 whitespace-nowrap">{row.QAStatus || 'N/A'}</td>\n<td className="px-4 py-3 text-sm text-slate-600 whitespace-nowrap">{row.tempStability || 'N/A'}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+    {filteredData.length === 0 && <div className="p-8 text-center text-slate-500">No matching records found.</div>}
+  </div>
+</div>
     </div>
   );
 };
+
 export default DeliveryLog;

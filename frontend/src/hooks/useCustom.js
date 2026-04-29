@@ -3,7 +3,7 @@
  * Reusable hooks for common frontend operations
  */
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { apiClient } from '../api/apiClient';
 
 /**
@@ -157,9 +157,16 @@ export function useAsync(asyncFunction, immediate = true) {
 
   useEffect(() => {
     if (immediate) {
-      execute();
+      asyncFunction().then(response => {
+        setData(response);
+        setStatus('success');
+      }).catch(err => {
+        setError(err);
+        setStatus('error');
+      });
     }
-  }, [execute, immediate]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return { execute, status, data, error };
 }
@@ -172,8 +179,8 @@ export function useLocalStorage(key, initialValue) {
     try {
       const item = window.localStorage.getItem(key);
       return item ? JSON.parse(item) : initialValue;
-    } catch (error) {
-      console.error(error);
+    } catch (_err) {
+      console.error(_err);
       return initialValue;
     }
   });
@@ -183,8 +190,8 @@ export function useLocalStorage(key, initialValue) {
       const valueToStore = value instanceof Function ? value(storedValue) : value;
       setStoredValue(valueToStore);
       window.localStorage.setItem(key, JSON.stringify(valueToStore));
-    } catch (error) {
-      console.error(error);
+    } catch (_err) {
+      console.error(_err);
     }
   }, [key, storedValue]);
 
@@ -212,7 +219,7 @@ export function useDebounce(value, delay = 500) {
  * usePrevious Hook - Track previous value
  */
 export function usePrevious(value) {
-  const ref = React.useRef();
+  const ref = useRef();
 
   useEffect(() => {
     ref.current = value;

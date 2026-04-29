@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from app.api.v1.endpoints import shipments, events, sensors, documents, alerts
+from app.api.v1.endpoints import shipments, events, sensors, documents, alerts, blockchain
 
 api_router = APIRouter()
 
@@ -8,3 +8,4 @@ api_router.include_router(events.router, prefix="/v1", tags=["events"])
 api_router.include_router(sensors.router, prefix="/v1", tags=["sensors"]) 
 api_router.include_router(documents.router, prefix="/v1", tags=["documents"]) 
 api_router.include_router(alerts.router, prefix="/v1", tags=["alerts"]) 
+api_router.include_router(blockchain.router, prefix="/v1/blockchain", tags=["blockchain"])

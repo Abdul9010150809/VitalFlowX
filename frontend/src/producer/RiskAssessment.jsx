@@ -1,5 +1,5 @@
 import React from 'react';
-import { HeartPulse, CheckSquare } from 'lucide-react';
+import { CheckSquare } from 'lucide-react';
 const RiskAssessment = () => (
   <div className="max-w-5xl mx-auto animate-fade-in-up space-y-6">
      <div className="text-center mb-10"><h2 className="text-3xl font-black text-slate-800">AI Risk Matrix</h2></div>

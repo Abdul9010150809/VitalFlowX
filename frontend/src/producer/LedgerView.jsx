@@ -1,5 +1,5 @@
 import React from 'react';
-import { Database, Link2 } from 'lucide-react';
+import { Database } from 'lucide-react';
 const LedgerView = () => (
   <div className="max-w-6xl mx-auto space-y-8 animate-fade-in-up">
     <div className="bg-slate-900 rounded-3xl p-8 text-white relative overflow-hidden shadow-2xl border border-slate-800">

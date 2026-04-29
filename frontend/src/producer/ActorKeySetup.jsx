@@ -1,5 +1,5 @@
 import React from 'react';
-import { KeyRound, Shield } from 'lucide-react';
+import { Shield } from 'lucide-react';
 const ActorKeySetup = () => (
   <div className="max-w-4xl mx-auto animate-fade-in-up space-y-6">
     <div className="flex gap-4 items-center mb-8 border-b border-slate-100 pb-4">

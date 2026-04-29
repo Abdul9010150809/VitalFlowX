@@ -1,20 +1,20 @@
 version: '3.8'
 
 services:
-  # PostgreSQL Database
-  postgres:
-    image: postgres:15-alpine
-    container_name: vitalflowx_postgres
+  # MongoDB Database
+  mongodb:
+    image: mongo:6.0
+    container_name: vitalflowx_mongodb
     environment:
-      POSTGRES_USER: vitalflow_user
-      POSTGRES_PASSWORD: vitalflow_password
-      POSTGRES_DB: vitalflowx
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpassword
+      MONGO_INITDB_DATABASE: vitalflowx
     ports:
-      - "5432:5432"
+      - "27017:27017"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - mongodb_data:/data/db
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U vitalflow_user"]
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
       interval: 10s
       timeout: 5s
       retries: 5
@@ -43,13 +43,13 @@ services:
     ports:
       - "8000:8000"
     environment:
-      DATABASE_URL: postgresql+asyncpg://vitalflow_user:vitalflow_password@postgres:5432/vitalflowx
+      DATABASE_URL: mongodb://root:rootpassword@mongodb:27017/vitalflowx?authSource=admin
       REDIS_URL: redis://redis:6379/0
       SECRET_KEY: your-super-secret-key-change-in-production
       ENVIRONMENT: development
       CORS_ORIGINS: '["http://localhost:5173", "http://localhost:3000"]'
     depends_on:
-      postgres:
+      mongodb:
         condition: service_healthy
       redis:
         condition: service_healthy
@@ -66,12 +66,12 @@ services:
     container_name: vitalflowx_celery
     command: celery -A app.workers.celery_app worker -l info
     environment:
-      DATABASE_URL: postgresql+asyncpg://vitalflow_user:vitalflow_password@postgres:5432/vitalflowx
+      DATABASE_URL: mongodb://root:rootpassword@mongodb:27017/vitalflowx?authSource=admin
       REDIS_URL: redis://redis:6379/1
       CELERY_BROKER_URL: redis://redis:6379/1
       CELERY_RESULT_BACKEND: redis://redis:6379/2
     depends_on:
-      - postgres
+      - mongodb
       - redis
       - backend
     volumes:
@@ -98,7 +98,7 @@ services:
       - vitalflowx_network
 
 volumes:
-  postgres_data:
+  mongodb_data:
   redis_data:
 
 networks:

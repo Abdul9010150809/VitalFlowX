@@ -1,37 +1,39 @@
-import React from 'react';
-import { liveTrackingData } from './dummyData';
-import { MapPin } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import { fetchRoute } from '../utils/mapService';
 
 const LiveTracking = () => {
+  const [routeCoords, setRouteCoords] = useState([]);
+
+  useEffect(() => {
+    // Example start/end coordinates (could be dynamic)
+    const start = [40.7128, -74.006]; // NYC
+    const end = [34.0522, -118.2437]; // LA
+    fetchRoute(start, end).then(data => {
+      const coords = data.features[0].geometry.coordinates.map(([lon, lat]) => [lat, lon]);
+      setRouteCoords(coords);
+    }).catch(console.error);
+  }, []);
+
   return (
-    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-      <div className="flex items-center space-x-3 mb-6">
-        <div className="p-2 bg-orange-50 text-orange-600 rounded-lg"><MapPin /></div>
-        <h2 className="text-2xl font-bold text-gray-800">Live GPS & Telemetry Tracking</h2>
-      </div>
-      <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Timestamp</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Internal Temp</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Coordinate Frame</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sensor Power</th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {liveTrackingData.map((row, i) => (
-              <tr key={i} className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{row.timestamp}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-blue-600">{row.temp}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-500">{row.location}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-green-600">{row.battery}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+    <div className="space-y-8 animate-fade-in-up pb-12">
+      <h2 className="text-3xl font-black text-slate-800">Live Tracking</h2>
+      <p className="text-slate-500">Real‑time route visualization between origin and destination.</p>
+      <div className="h-[500px] rounded-xl overflow-hidden border border-slate-200 shadow-sm">
+        <MapContainer center={[37.0902, -95.7129]} zoom={4} style={{ height: '100%', width: '100%' }}>
+          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+          {routeCoords.length > 0 && <Polyline positions={routeCoords} color="#4f46e5" weight={4} />}
+          <Marker position={[40.7128, -74.0060]}>
+            <Popup>Origin (NYC)</Popup>
+          </Marker>
+          <Marker position={[34.0522, -118.2437]}>
+            <Popup>Destination (LA)</Popup>
+          </Marker>
+        </MapContainer>
       </div>
     </div>
   );
 };
+
 export default LiveTracking;

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Truck, TrendingUp, AlertTriangle, CheckCircle2 } from 'lucide-react';
+import { Truck, AlertTriangle, CheckCircle2 } from 'lucide-react';
 import { shipmentsData } from './dummyData';
 import { formatDate } from '../../utils/helpers';
 
