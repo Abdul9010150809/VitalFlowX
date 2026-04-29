@@ -82,8 +82,8 @@ services:
   # React Frontend
   frontend:
     build:
-      context: .
-      dockerfile: Dockerfile.frontend
+      context: ./frontend
+      dockerfile: Dockerfile
     container_name: vitalflowx_frontend
     ports:
       - "5173:5173"
@@ -92,8 +92,8 @@ services:
     depends_on:
       - backend
     volumes:
-      - ./src:/app/src
-      - ./public:/app/public
+      - ./frontend/src:/app/src
+      - ./frontend/public:/app/public
     networks:
       - vitalflowx_network
 

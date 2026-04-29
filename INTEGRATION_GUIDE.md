@@ -59,11 +59,17 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ### 4. Frontend Setup (In a new terminal)
 
 ```bash
-# Navigate to root (from backend directory)
-cd ..
+# Navigate to frontend directory
+cd frontend
 
 # Install dependencies
 npm install
+
+# Copy environment template
+cp .env.local.example .env.local
+
+# Update .env.local with your configurations (optional)
+# nano .env.local  (or use your preferred editor)
 
 # Start development server
 npm run dev
@@ -225,6 +231,7 @@ uvicorn app.main:app --reload
 
 ### Terminal 2 - Frontend
 ```bash
+cd frontend
 npm run dev
 ```
 
@@ -320,6 +327,7 @@ pip install -r requirements.txt --force-reinstall
 **Module Not Found**
 ```bash
 # Clear node_modules and reinstall
+cd frontend
 rm -rf node_modules package-lock.json
 npm install
 ```
@@ -340,6 +348,7 @@ npm install
 
 ### Frontend Build
 ```bash
+cd frontend
 npm run build
 # Creates optimized build in dist/
 # Deploy dist/ contents to web server
@@ -347,6 +356,7 @@ npm run build
 
 ### Backend Deployment
 ```bash
+cd backend
 # Use production settings in .env
 uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4
 ```
@@ -356,12 +366,12 @@ uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4
 | Task | Command |
 |------|---------|
 | Start Backend | `cd backend && uvicorn app.main:app --reload` |
-| Start Frontend | `npm run dev` |
-| Build Frontend | `npm run build` |
+| Start Frontend | `cd frontend && npm run dev` |
+| Build Frontend | `cd frontend && npm run build` |
 | Run Migrations | `cd backend && alembic upgrade head` |
 | Create Migration | `cd backend && alembic revision --autogenerate -m "message"` |
-| Run Tests (Frontend) | `npm run test` |
-| Lint Code | `npm run lint` |
+| Run Tests (Frontend) | `cd frontend && npm run test` |
+| Lint Code | `cd frontend && npm run lint` |
 | Access API Docs | `http://localhost:8000/docs` |
 | Access Frontend | `http://localhost:5173` |
 
