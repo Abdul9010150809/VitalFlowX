@@ -18,6 +18,8 @@ import ProducerQRGenerator from '../producer/QRGenerator';
 import ProducerLedgerView from '../producer/LedgerViewV2';
 import ProducerAlertsMonitor from '../producer/AlertsMonitor_Improved';
 import ProducerExceptionCase from '../producer/ExceptionCase';
+import ProducerShipments from '../producer/ProducerShipments';
+import ProducerLiveTracking from '../producer/ProducerLiveTracking';
 import TransporterTransportDashboard from '../transporter/TransportDashboard';
 import TransporterLogin from '../transporter/Login';
 import TransporterPickupEvent from '../transporter/PickupEvent';
@@ -101,6 +103,8 @@ const AppRoutes = () => {
   const roleLinks = {
     producer: [
       { name: 'Dashboard & Ledger', path: 'producerdashboard' },
+      { name: 'Live Shipments', path: 'shipments' },
+      { name: 'Live Tracking', path: 'livetracking' },
       { name: 'Shipment Wizard', path: 'createshipment' },
       { name: 'Route & Maps', path: 'routeplan' },
       { name: 'Compliance & Settings', path: 'temprulesconfig' },
