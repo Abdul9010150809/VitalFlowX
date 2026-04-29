@@ -1,0 +1,13 @@
+fastapi
+uvicorn[standard]
+SQLAlchemy
+alembic
+asyncpg
+pydantic
+python-jose
+PyJWT
+redis
+celery
+web3
+passlib
+python-multipart
