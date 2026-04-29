@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Float, ForeignKey
 from sqlalchemy.sql import func
-from sqlalchemy.sql.schema import DateTime
+from sqlalchemy import DateTime
 from sqlalchemy import JSON
 from app.db.base import Base
 

@@ -7,10 +7,10 @@ const OnChainRegister = () => (
            <Terminal className="w-5 h-5"/> <span>Smart Contract Executor</span>
         </div>
         <div className="p-8 space-y-4">
-           <p className="opacity-80">> Initializing consensus protocol...</p>
-           <p className="opacity-80">> Compiling shipment variables constraints...</p>
-           <p className="opacity-80">> Pinging nodes 1... 4... 12... [OK]</p>
-           <p className="text-yellow-400">> Requesting Signature payload required for TX allocation.</p>
+           <p className="opacity-80">&gt; Initializing consensus protocol...</p>
+           <p className="opacity-80">&gt; Compiling shipment variables constraints...</p>
+           <p className="opacity-80">&gt; Pinging nodes 1... 4... 12... [OK]</p>
+           <p className="text-yellow-400">&gt; Requesting Signature payload required for TX allocation.</p>
            
            <div className="mt-8 p-6 bg-slate-800/50 rounded-xl border border-slate-700 backdrop-blur-md relative z-10 flex flex-col items-center justify-center text-center">
               <Lock className="w-10 h-10 text-yellow-500 mb-4 animate-pulse" />

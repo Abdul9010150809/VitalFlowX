@@ -3,7 +3,7 @@
  * Handles authentication, error handling, and request/response transformation
  */
 
-import { API_CONFIG, STORAGE_KEYS } from './apiConfig';
+import { API_CONFIG, STORAGE_KEYS } from '../config/apiConfig';
 
 class APIClient {
   constructor(config = API_CONFIG) {
