@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { LogOut, Menu, X, Activity, ChevronRight } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const roleThemes = {
   producer:    { gradient: 'from-indigo-600 to-indigo-800',  accent: 'text-indigo-500',  activeBg: 'bg-indigo-500/10', activeBorder: 'border-indigo-500/40', badge: 'bg-indigo-500' },
@@ -14,6 +15,7 @@ const roleThemes = {
 const DashboardLayout = ({ role, links, children }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useTranslation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const theme = roleThemes[role] || roleThemes.producer;
 
@@ -79,7 +81,7 @@ const DashboardLayout = ({ role, links, children }) => {
           className="flex items-center gap-2 w-full px-3 py-2 text-sm font-medium text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200"
         >
           <LogOut className="w-4 h-4" />
-          Sign Out
+          {t('logout')}
         </button>
       </div>
     </>
@@ -136,7 +138,7 @@ const DashboardLayout = ({ role, links, children }) => {
         </header>
 
         {/* Page Content */}
-        <div className="flex-1 overflow-y-auto p-4 md:p-8">
+        <div className="flex-1 overflow-y-auto p-4 md:p-8" role="main" id="main-content">
           <div className="max-w-7xl mx-auto animate-fade-in">
             {children}
           </div>
