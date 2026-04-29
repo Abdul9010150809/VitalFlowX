@@ -71,7 +71,7 @@ export function validateEmail(email) {
  * Validate phone number
  */
 export function validatePhone(phone) {
-  const re = /^[\d\s\-\+\(\)]{10,}$/;
+  const re = /^[\d\s+()-]{10,}$/;
   return re.test(phone);
 }
 

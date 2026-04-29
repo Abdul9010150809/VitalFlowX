@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { PackageOpen, QrCode, ShieldCheck, ThermometerSnowflake, User, MapPin, Database, Send, Plus } from 'lucide-react';
+import { PackageOpen, QrCode, ShieldCheck, ThermometerSnowflake, User, MapPin, Database, Send, Plus, CheckCircle2 } from 'lucide-react';
 
 const ReceiveShipment = () => {
   const [isProcessing, setIsProcessing] = useState(false);

@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { LogOut, Menu, X, Activity, ChevronRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { apiClient } from '../api/apiClient';
+import { STORAGE_KEYS } from '../config/apiConfig';
 
 const roleThemes = {
   producer:    { gradient: 'from-indigo-600 to-indigo-800',  accent: 'text-indigo-500',  activeBg: 'bg-indigo-500/10', activeBorder: 'border-indigo-500/40', badge: 'bg-indigo-500' },
@@ -20,7 +22,8 @@ const DashboardLayout = ({ role, links, children }) => {
   const theme = roleThemes[role] || roleThemes.producer;
 
   const handleLogout = () => {
-    localStorage.removeItem('userRole');
+    apiClient.clearTokens();
+    localStorage.removeItem(STORAGE_KEYS.USER_ROLE);
     navigate('/login');
   };
 

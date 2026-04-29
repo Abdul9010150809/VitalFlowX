@@ -4,7 +4,7 @@ import ProtectedRoute from '../common/ProtectedRoute';
 import DashboardLayout from '../layouts/DashboardLayout';
 
 import ProducerProducerDashboard from '../producer/ProducerDashboard';
-import ProducerCreateShipment from '../producer/CreateShipment';
+import ProducerCreateShipment from '../producer/CreateShipment_v2';
 import ProducerProductBatchConfig from '../producer/ProductBatchConfig';
 import ProducerRoutePlan from '../producer/RoutePlan';
 import ProducerTempRulesConfig from '../producer/TempRulesConfig';
@@ -15,14 +15,15 @@ import ProducerActorKeySetup from '../producer/ActorKeySetup';
 import ProducerRiskAssessment from '../producer/RiskAssessment';
 import ProducerOnChainRegister from '../producer/OnChainRegister';
 import ProducerQRGenerator from '../producer/QRGenerator';
-import ProducerLedgerView from '../producer/LedgerView';
-import ProducerAlertsMonitor from '../producer/AlertsMonitor';
+import ProducerLedgerView from '../producer/LedgerViewV2';
+import ProducerAlertsMonitor from '../producer/AlertsMonitor_Improved';
 import ProducerExceptionCase from '../producer/ExceptionCase';
 import TransporterTransportDashboard from '../transporter/TransportDashboard';
 import TransporterLogin from '../transporter/Login';
 import TransporterPickupEvent from '../transporter/PickupEvent';
 import TransporterHandoffEvent from '../transporter/HandoffEvent';
 import TransporterLiveTracking from '../transporter/LiveTracking';
+import TransporterShipments from '../transporter/TransporterShipments';
 import TransporterSensorMonitor from '../transporter/SensorMonitor';
 import TransporterSensorCheck from '../transporter/SensorCheck';
 import TransporterTemperatureGraph from '../transporter/TemperatureGraph';
@@ -36,6 +37,7 @@ import TransporterProfileSettings from '../transporter/ProfileSettings';
 import WarehouseWarehouseDashboard from '../warehouse/WarehouseDashboard';
 import WarehouseSecureAccess from '../warehouse/SecureAccess';
 import WarehouseReceiveShipment from '../warehouse/ReceiveShipment';
+import WarehouseReceiptTracking from '../warehouse/WarehouseReceiptTracking';
 import WarehouseStorageAllocation from '../warehouse/StorageAllocation';
 import WarehouseColdMonitoring from '../warehouse/ColdMonitoring';
 import WarehouseSensorAnalytics from '../warehouse/SensorAnalytics';
@@ -51,6 +53,7 @@ import WarehouseProfileSettings from '../warehouse/ProfileSettings';
 import RetailerRetailDashboard from '../retailer/RetailDashboard';
 import RetailerSecureLogin from '../retailer/SecureLogin';
 import RetailerScanShipment from '../retailer/ScanShipment';
+import RetailerShipmentTracking from '../retailer/RetailerShipmentTracking';
 import RetailerLedgerExplorer from '../retailer/LedgerExplorer';
 import RetailerDocumentValidation from '../retailer/DocumentValidation';
 import RetailerSensorGraph from '../retailer/SensorGraph';
@@ -104,12 +107,14 @@ const AppRoutes = () => {
     ],
     transporter: [
       { name: 'Fleet Dashboard', path: 'transportdashboard' },
+      { name: 'Shipments', path: 'shipments' },
       { name: 'Live Tracking', path: 'livetracking' },
       { name: 'Events & Sync', path: 'pickupevent' },
       { name: 'Alerts & Reports', path: 'incidentreport' },
     ],
     warehouse: [
       { name: 'Warehouse Overview', path: 'warehousedashboard' },
+      { name: 'Receipt Tracking', path: 'receipttracking' },
       { name: 'Storage & Inventory', path: 'storageallocation' },
       { name: 'Sensor Analytics', path: 'sensoranalytics' },
       { name: 'Compliance & SLA', path: 'slacompliance' },
@@ -117,6 +122,7 @@ const AppRoutes = () => {
     retailer: [
       { name: 'Retail Dashboard', path: 'retaildashboard' },
       { name: 'Scan & Receive', path: 'scanshipment' },
+      { name: 'Shipment Tracking', path: 'shipmenttracking' },
       { name: 'Shipment Ledger', path: 'shipmenthistory' },
       { name: 'Customer Portal', path: 'customerview' },
     ],
@@ -164,6 +170,7 @@ const AppRoutes = () => {
           <Route path="pickupevent" element={<TransporterPickupEvent />} />
           <Route path="handoffevent" element={<TransporterHandoffEvent />} />
           <Route path="livetracking" element={<TransporterLiveTracking />} />
+          <Route path="shipments" element={<TransporterShipments />} />
           <Route path="sensormonitor" element={<TransporterSensorMonitor />} />
           <Route path="sensorcheck" element={<TransporterSensorCheck />} />
           <Route path="temperaturegraph" element={<TransporterTemperatureGraph />} />
@@ -182,6 +189,7 @@ const AppRoutes = () => {
           <Route path="warehousedashboard" element={<WarehouseWarehouseDashboard />} />
           <Route path="secureaccess" element={<WarehouseSecureAccess />} />
           <Route path="receiveshipment" element={<WarehouseReceiveShipment />} />
+          <Route path="receipttracking" element={<WarehouseReceiptTracking />} />
           <Route path="storageallocation" element={<WarehouseStorageAllocation />} />
           <Route path="coldmonitoring" element={<WarehouseColdMonitoring />} />
           <Route path="sensoranalytics" element={<WarehouseSensorAnalytics />} />
@@ -202,6 +210,7 @@ const AppRoutes = () => {
           <Route path="retaildashboard" element={<RetailerRetailDashboard />} />
           <Route path="securelogin" element={<RetailerSecureLogin />} />
           <Route path="scanshipment" element={<RetailerScanShipment />} />
+          <Route path="shipmenttracking" element={<RetailerShipmentTracking />} />
           <Route path="ledgerexplorer" element={<RetailerLedgerExplorer />} />
           <Route path="documentvalidation" element={<RetailerDocumentValidation />} />
           <Route path="sensorgraph" element={<RetailerSensorGraph />} />

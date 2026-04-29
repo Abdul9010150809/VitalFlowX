@@ -163,7 +163,7 @@ class APIClient {
 
       this.clearTokens();
       return false;
-    } catch (error) {
+    } catch (_error) {
       this.clearTokens();
       return false;
     }

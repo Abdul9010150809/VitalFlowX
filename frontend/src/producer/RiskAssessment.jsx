@@ -1,6 +1,6 @@
 import React from 'react';
-import { ShieldAlert, AlertTriangle, CheckCircle, Activity, TrendingUp, TrendingDown, Info } from 'lucide-react';
-import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip } from 'recharts';
+import { CheckCircle, Activity, TrendingUp, TrendingDown, Info } from 'lucide-react';
+import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, LineChart, Line, Tooltip } from 'recharts';
 
 const riskData = [
   { subject: 'Temp Stability', A: 120, fullMark: 150 },

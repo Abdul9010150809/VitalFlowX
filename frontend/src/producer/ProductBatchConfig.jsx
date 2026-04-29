@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Package, Settings, Database, ShieldCheck, Plus, Trash2, Info } from 'lucide-react';
+import { Settings, Database, ShieldCheck, Plus, Trash2, Info } from 'lucide-react';
 
 const ProductBatchConfig = () => {
-  const [batches, setBatches] = useState([
+  const [batches] = useState([
     { id: 'B-8812', name: 'Ultra-Cold Vaccine', targetTemp: '-72°C', shelfLife: '24 Months' },
     { id: 'B-8813', name: 'Plasma Supply', targetTemp: '4°C', shelfLife: '6 Months' },
   ]);

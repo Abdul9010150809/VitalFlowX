@@ -3,8 +3,9 @@
  * Reusable hooks for common frontend operations
  */
 
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { apiClient } from '../api/apiClient';
+import { STORAGE_KEYS } from '../config/apiConfig';
 
 /**
  * useAuth Hook - Manage authentication state
@@ -19,8 +20,8 @@ export function useAuth() {
     // Check if user is already authenticated
     const checkAuth = async () => {
       try {
-        const userData = localStorage.getItem('user_data');
-        const token = localStorage.getItem('auth_token');
+        const userData = localStorage.getItem(STORAGE_KEYS.USER_DATA);
+        const token = localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
         
         if (userData && token) {
           setUser(JSON.parse(userData));
@@ -47,7 +48,7 @@ export function useAuth() {
       apiClient.saveTokens(response.token, response.refresh_token);
       setUser(response.user);
       setIsAuthenticated(true);
-      localStorage.setItem('user_data', JSON.stringify(response.user));
+      localStorage.setItem(STORAGE_KEYS.USER_DATA, JSON.stringify(response.user));
       return response;
     } catch (err) {
       setError(err.message);
@@ -61,7 +62,7 @@ export function useAuth() {
     apiClient.clearTokens();
     setUser(null);
     setIsAuthenticated(false);
-    localStorage.removeItem('user_data');
+    localStorage.removeItem(STORAGE_KEYS.USER_DATA);
   }, []);
 
   return {
@@ -215,15 +216,3 @@ export function useDebounce(value, delay = 500) {
   return debouncedValue;
 }
 
-/**
- * usePrevious Hook - Track previous value
- */
-export function usePrevious(value) {
-  const ref = useRef();
-
-  useEffect(() => {
-    ref.current = value;
-  }, [value]);
-
-  return ref.current;
-}

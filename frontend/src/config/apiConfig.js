@@ -85,6 +85,7 @@ export const STORAGE_KEYS = {
   AUTH_TOKEN: 'auth_token',
   REFRESH_TOKEN: 'refresh_token',
   USER_DATA: 'user_data',
+  USER_ROLE: 'user_role',
   THEME: 'theme_preference',
   SIDEBAR_STATE: 'sidebar_collapsed',
 };

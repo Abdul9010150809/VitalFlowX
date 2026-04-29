@@ -4,7 +4,7 @@
  */
 
 import { apiClient } from '../../api/apiClient';
-import { API_ENDPOINTS } from '../../config/apiConfig';
+import { API_ENDPOINTS, STORAGE_KEYS } from '../../config/apiConfig';
 
 class ProducerService {
   /**
@@ -78,18 +78,25 @@ class ProducerService {
     try {
       const formData = new FormData();
       formData.append('shipment_id', shipmentId);
-      documents.forEach((doc, index) => {
+      documents.forEach((doc) => {
         formData.append(`files`, doc);
       });
 
       const endpoint = `${API_ENDPOINTS.DOCUMENTS.UPLOAD}`;
-      return await fetch(`${apiClient.baseURL}${endpoint}`, {
+      const response = await fetch(`${apiClient.baseURL}${endpoint}`, {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+          Authorization: `Bearer ${localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN)}`,
         },
         body: formData,
-      }).then(r => r.json());
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || 'Failed to upload documents');
+      }
+
+      return await response.json();
     } catch (error) {
       console.error('Error uploading documents:', error);
       throw error;

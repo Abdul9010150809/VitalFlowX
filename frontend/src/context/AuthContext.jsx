@@ -95,5 +95,3 @@ export function useAuthContext() {
   }
   return context;
 }
-
-export default AuthContext;

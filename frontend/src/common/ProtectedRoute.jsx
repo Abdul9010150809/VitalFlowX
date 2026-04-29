@@ -1,7 +1,8 @@
 import { Navigate, Outlet } from 'react-router-dom';
+import { STORAGE_KEYS } from '../config/apiConfig';
 
 const ProtectedRoute = ({ allowedRoles }) => {
-  const userRole = localStorage.getItem('userRole');
+  const userRole = localStorage.getItem(STORAGE_KEYS.USER_ROLE);
 
   if (!userRole) {
     return <Navigate to="/login" replace />;

@@ -2,42 +2,150 @@ import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Polyline, Circle } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { fetchRoute } from '../utils/mapService';
-import { Navigation, Clock, ShieldCheck, MapPin, Zap, AlertTriangle, Layers, Play, Pause } from 'lucide-react';
+import { Navigation, Clock, ShieldCheck, Zap, Play, Pause, AlertCircle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useShipments } from '../context/ShipmentContext';
+import TransporterService from './TransporterService';
 
-const LiveTracking = () => {
+const LiveTracking = ({ shipmentId = null }) => {
   const { t } = useTranslation();
+  const { shipments, loading: shipmentsLoading } = useShipments();
+  
   const [routeCoords, setRouteCoords] = useState([]);
   const [isOptimizing, setIsOptimizing] = useState(false);
-  const [viewMode, setViewMode] = useState('Standard');
   const [isLive, setIsLive] = useState(true);
   const [carPosIndex, setCarPosIndex] = useState(0);
+  const [activeShipment, setActiveShipment] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [eta, setEta] = useState(null);
 
+  // Get shipment to display
   useEffect(() => {
-    const start = [40.7128, -74.006]; // NYC
-    const end = [34.0522, -118.2437]; // LA
-    fetchRoute(start, end).then(data => {
-      const coords = data.features[0].geometry.coordinates.map(([lon, lat]) => [lat, lon]);
-      setRouteCoords(coords);
-    }).catch(console.error);
-  }, []);
-
-  useEffect(() => {
-    let interval;
-    if (isLive && routeCoords.length > 0) {
-      interval = setInterval(() => {
-        setCarPosIndex((prev) => (prev + 1) % routeCoords.length);
-      }, 1000);
+    if (shipmentId) {
+      const found = shipments.find(s => s.id === parseInt(shipmentId));
+      setActiveShipment(found);
+    } else if (shipments.length > 0) {
+      // Show first active shipment
+      const inTransit = shipments.find(s => s.status === 'in_transit');
+      setActiveShipment(inTransit || shipments[0]);
     }
-    return () => clearInterval(interval);
-  }, [isLive, routeCoords]);
+  }, [shipmentId, shipments]);
 
-  const handleOptimize = () => {
+  // Fetch route coordinates from shipment data
+  useEffect(() => {
+    const loadRoute = async () => {
+      if (!activeShipment) return;
+      
+      setLoading(true);
+      try {
+        // Parse origin and destination
+        let startCoords = [40.7128, -74.006]; // Default NYC
+        let endCoords = [34.0522, -118.2437]; // Default LA
+
+        if (activeShipment.origin && typeof activeShipment.origin === 'string') {
+          // Try to parse origin
+          const parts = activeShipment.origin.split(',').map(p => parseFloat(p.trim()));
+          if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
+            startCoords = [parts[0], parts[1]];
+          }
+        }
+
+        if (activeShipment.destination && typeof activeShipment.destination === 'string') {
+          // Try to parse destination
+          const parts = activeShipment.destination.split(',').map(p => parseFloat(p.trim()));
+          if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
+            endCoords = [parts[0], parts[1]];
+          }
+        }
+
+        // Calculate ETA
+        const etaData = TransporterService.calculateETA(startCoords[0], startCoords[1], endCoords[0], endCoords[1]);
+        setEta(etaData);
+
+        // Fetch route
+        try {
+          const data = await fetchRoute(startCoords, endCoords);
+          if (data && data.features && data.features[0]) {
+            const coords = data.features[0].geometry.coordinates.map(([lon, lat]) => [lat, lon]);
+            setRouteCoords(coords);
+          } else {
+            // Fallback: create simple line between start and end
+            setRouteCoords([startCoords, endCoords]);
+          }
+        } catch (routeError) {
+          console.warn('Route fetch failed, using direct line:', routeError);
+          setRouteCoords([startCoords, endCoords]);
+        }
+      } catch (error) {
+        console.error('Error loading route:', error);
+        setRouteCoords([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadRoute();
+  }, [activeShipment]);
+
+  const handleOptimize = async () => {
+    if (!activeShipment) return;
+    
     setIsOptimizing(true);
-    setTimeout(() => setIsOptimizing(false), 2000);
+    try {
+      const result = await TransporterService.optimizeRoute(
+        40.7128, -74.006,
+        34.0522, -118.2437
+      );
+      if (result) {
+        // Optimize succeeded
+      }
+    } catch (error) {
+      console.error('Route optimization failed:', error);
+    } finally {
+      setTimeout(() => setIsOptimizing(false), 2000);
+    }
+  };
+
+  const handleStatusUpdate = async (newStatus) => {
+    if (!activeShipment) return;
+    
+    try {
+      if (newStatus === 'in_transit') {
+        await TransporterService.acknowledgePickup(activeShipment.id);
+      } else if (newStatus === 'delivered') {
+        await TransporterService.reportDelivery(activeShipment.id);
+      }
+      // Refresh shipment data
+      setActiveShipment(prev => ({ ...prev, status: newStatus }));
+    } catch (error) {
+      console.error('Status update failed:', error);
+    }
   };
 
   const currentPos = routeCoords.length > 0 ? routeCoords[carPosIndex] : [37.0902, -95.7129];
+  const progress = routeCoords.length > 0 ? (carPosIndex / routeCoords.length) * 100 : 0;
+
+  if (shipmentsLoading) {
+    return (
+      <div className="flex items-center justify-center h-96">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+      </div>
+    );
+  }
+
+  if (!activeShipment) {
+    return (
+      <div className="space-y-8 animate-fade-in-up pb-12">
+        <div className="bg-yellow-50 border border-yellow-200 rounded-[20px] p-6 flex items-center gap-4">
+          <AlertCircle className="w-6 h-6 text-yellow-600" />
+          <div>
+            <h3 className="font-bold text-yellow-800">No Active Shipments</h3>
+            <p className="text-yellow-700 text-sm">No shipments in transit found. Create or assign a shipment to view live tracking.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8 animate-fade-in-up pb-12">
@@ -46,7 +154,9 @@ const LiveTracking = () => {
           <h2 className="text-3xl font-black text-slate-800 flex items-center gap-2">
             <Navigation className="w-8 h-8 text-indigo-600" /> {t('live_tracking')}
           </h2>
-          <p className="text-slate-500 font-medium mt-1">Real‑time telemetry stream and smart geofencing active.</p>
+          <p className="text-slate-500 font-medium mt-1">
+            Shipment {activeShipment?.id} • {activeShipment?.status?.replace('_', ' ').toUpperCase()}
+          </p>
         </div>
         <div className="flex gap-2">
           <button 
@@ -80,17 +190,19 @@ const LiveTracking = () => {
                    <div className="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center"><Clock className="w-5 h-5" /></div>
                    <div>
                       <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Predictive ETA</p>
-                      <p className="text-xl font-black text-slate-800">14:20 <span className="text-xs text-slate-400">PST</span></p>
+                      <p className="text-xl font-black text-slate-800">
+                        {eta ? new Date(eta.eta).toLocaleTimeString() : 'Calculating...'}
+                      </p>
                    </div>
                 </div>
                 <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100">
                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Current Progress</p>
                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-xs font-bold text-slate-700">{Math.round((carPosIndex/routeCoords.length)*100) || 0}% Completed</span>
-                      <span className="text-xs font-bold text-indigo-600">{routeCoords.length - carPosIndex} pts left</span>
+                      <span className="text-xs font-bold text-slate-700">{Math.round(progress)}% Completed</span>
+                      <span className="text-xs font-bold text-indigo-600">{eta ? `${(eta.distance)} km` : 'N/A'}</span>
                    </div>
                    <div className="h-2 w-full bg-slate-200 rounded-full overflow-hidden">
-                      <div className="h-full bg-indigo-600 transition-all duration-1000" style={{ width: `${(carPosIndex/routeCoords.length)*100}%` }}></div>
+                      <div className="h-full bg-indigo-600 transition-all duration-1000" style={{ width: `${progress}%` }}></div>
                    </div>
                 </div>
                 <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-center gap-3">
@@ -106,14 +218,20 @@ const LiveTracking = () => {
 
         {/* Map Container */}
         <div className="xl:col-span-3 h-[600px] rounded-[40px] overflow-hidden border-8 border-white shadow-2xl relative">
-          <MapContainer center={[37.0902, -95.7129]} zoom={4} style={{ height: '100%', width: '100%' }}>
-            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-            {routeCoords.length > 0 && <Polyline positions={routeCoords} color="#4f46e5" weight={5} opacity={0.6} />}
-            <Marker position={currentPos}>
-              <Popup>VTX-FLEET-01: Active Telemetry Stream</Popup>
-            </Marker>
-            <Circle center={currentPos} radius={20000} pathOptions={{ color: '#6366f1', fillColor: '#6366f1', fillOpacity: 0.1 }} />
-          </MapContainer>
+          {loading ? (
+            <div className="flex items-center justify-center h-full bg-slate-50">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+            </div>
+          ) : (
+            <MapContainer center={currentPos} zoom={4} style={{ height: '100%', width: '100%' }}>
+              <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+              {routeCoords.length > 0 && <Polyline positions={routeCoords} color="#4f46e5" weight={5} opacity={0.6} />}
+              <Marker position={currentPos}>
+                <Popup>VTX-{activeShipment.id}: Active Telemetry Stream</Popup>
+              </Marker>
+              <Circle center={currentPos} radius={20000} pathOptions={{ color: '#6366f1', fillColor: '#6366f1', fillOpacity: 0.1 }} />
+            </MapContainer>
+          )}
           
           <div className="absolute top-8 right-8 z-[1000] flex flex-col gap-2">
              <div className="bg-white/90 backdrop-blur p-4 rounded-2xl shadow-xl border border-white flex items-center gap-4">

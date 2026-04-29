@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Activity, Factory, Truck, Warehouse, Store, ClipboardCheck, Scale, ChevronRight, ArrowLeft } from 'lucide-react';
+import { STORAGE_KEYS } from '../config/apiConfig';
 
 const roles = [
   { id: 'producer', name: 'Producer', desc: 'Manage batches, sensors & blockchain registrations', icon: Factory, color: 'from-indigo-500 to-indigo-700', bg: 'bg-indigo-500/10', border: 'border-indigo-500/20', text: 'text-indigo-400' },
@@ -18,7 +19,7 @@ const LoginPage = () => {
 
   const handleLogin = (roleId) => {
     setSelectedRole(roleId);
-    localStorage.setItem('userRole', roleId);
+    localStorage.setItem(STORAGE_KEYS.USER_ROLE, roleId);
     setTimeout(() => navigate(`/${roleId}`), 400);
   };
 
